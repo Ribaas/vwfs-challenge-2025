@@ -9,7 +9,7 @@ public class FreteStrategyResolverTests
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly FreteStrategyResolver _freteStrategyResolver;
-    
+
     public FreteStrategyResolverTests()
     {
         // Arrange
@@ -17,39 +17,39 @@ public class FreteStrategyResolverTests
         services.AddScoped<NormalFreteStrategy>();
         services.AddScoped<ExpressaFreteStrategy>();
         services.AddScoped<AgendadaFreteStrategy>();
-        
+
         _serviceProvider = services.BuildServiceProvider();
         _freteStrategyResolver = new FreteStrategyResolver(_serviceProvider);
     }
 
     [Fact]
-    public void Resolver_deve_retornar_NormalFreteStrategy()
+    public void Resolve_ShouldReturnNormalFreteStrategy_WhenModalidadeIsNormal()
     {
         // Act
         var strategy = _freteStrategyResolver.Resolve(ModalidadeFrete.Normal);
-        
+
         // Assert
         Assert.NotNull(strategy);
         Assert.IsType<NormalFreteStrategy>(strategy);
     }
-    
+
     [Fact]
-    public void Resolver_deve_retornar_ExpressaFreteStrategy()
+    public void Resolve_ShouldReturnExpressaFreteStrategy_WhenModalidadeIsExpressa()
     {
         // Act
         var strategy = _freteStrategyResolver.Resolve(ModalidadeFrete.Expressa);
-        
+
         // Assert
         Assert.NotNull(strategy);
         Assert.IsType<ExpressaFreteStrategy>(strategy);
     }
-    
+
     [Fact]
-    public void Resolver_deve_retornar_AgendadaFreteStrategy()
+    public void Resolve_ShouldReturnAgendadaFreteStrategy_WhenModalidadeIsAgendada()
     {
         // Act
         var strategy = _freteStrategyResolver.Resolve(ModalidadeFrete.Agendada);
-        
+
         // Assert
         Assert.NotNull(strategy);
         Assert.IsType<AgendadaFreteStrategy>(strategy);

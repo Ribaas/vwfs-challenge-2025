@@ -6,7 +6,7 @@ namespace Frete.Tests;
 public class FreteStrategyTests
 {
     [Fact]
-    public void Deve_calcular_frete_normal()
+    public void CalcularFrete_ShouldCalculateCorrectly_WhenUsingNormalFreteStrategy()
     {
         // Arrange
         var strategy = new NormalFreteStrategy();
@@ -23,7 +23,7 @@ public class FreteStrategyTests
     }
     
     [Fact]
-    public void Deve_calcular_frete_expresso()
+    public void CalcularFrete_ShouldCalculateCorrectly_WhenUsingExpressaFreteStrategy()
     {
         // Arrange
         var strategy = new ExpressaFreteStrategy();
@@ -40,7 +40,7 @@ public class FreteStrategyTests
     }
     
     [Fact]
-    public void Deve_calcular_frete_agendado()
+    public void CalcularFrete_ShouldCalculateCorrectly_WhenUsingAgendadaFreteStrategy()
     {
         // Arrange
         var strategy = new AgendadaFreteStrategy();
