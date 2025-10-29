@@ -51,8 +51,8 @@ public class FreteStrategyTests
         var valor = strategy.CalcularFrete(parametros);
         
         // Assert
-        // Calculo Frete Agendado = peso * 0.5 + distancia * 1 + taxaFixa (10)
-        var esperado = (5m * 0.5m) + (10m * 0.5m) + 5m;
+        // Calculo Frete Agendado = peso * 0.5 + distancia * 0.5 + taxaFixa (10)
+        var esperado = (5m * 0.5m) + (10m * 0.5m) + 10m;
         Assert.Equal(esperado, valor);
     }
     
