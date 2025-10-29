@@ -1,3 +1,6 @@
+using Frete.Application.Strategies;
+using Frete.Domain.ValueObjects;
+
 namespace Frete.Tests;
 
 public class FreteStrategyTests
@@ -11,7 +14,7 @@ public class FreteStrategyTests
         var parametros = new FreteParametros(5m, 10m, 2m);
         
         // Act
-        var valor = strategy.Calcular(parametros);
+        var valor = strategy.CalcularFrete(parametros);
         
         // Assert
         // Calculo Frete Normal = peso * 0.5 + distancia * 0.1 + taxaFixa
