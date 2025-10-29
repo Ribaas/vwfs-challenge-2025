@@ -10,4 +10,10 @@
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.3"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Frete.Application\Frete.Application.csproj" />
+      <ProjectReference Include="..\Frete.Domain\Frete.Domain.csproj" />
+      <ProjectReference Include="..\Frete.Infra\Frete.Infra.csproj" />
+    </ItemGroup>
+
 </Project>
