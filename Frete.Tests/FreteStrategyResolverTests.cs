@@ -32,4 +32,26 @@ public class FreteStrategyResolverTests
         Assert.NotNull(strategy);
         Assert.IsType<NormalFreteStrategy>(strategy);
     }
+    
+    [Fact]
+    public void Resolver_deve_retornar_ExpressaFreteStrategy()
+    {
+        // Act
+        var strategy = _freteStrategyResolver.Resolve(ModalidadeFrete.Expressa);
+        
+        // Assert
+        Assert.NotNull(strategy);
+        Assert.IsType<ExpressaFreteStrategy>(strategy);
+    }
+    
+    [Fact]
+    public void Resolver_deve_retornar_AgendadaFreteStrategy()
+    {
+        // Act
+        var strategy = _freteStrategyResolver.Resolve(ModalidadeFrete.Agendada);
+        
+        // Assert
+        Assert.NotNull(strategy);
+        Assert.IsType<AgendadaFreteStrategy>(strategy);
+    }
 }
