@@ -28,7 +28,7 @@ public class FreteStrategyTests
         // Arrange
         var strategy = new ExpressaFreteStrategy();
         // parametros = peso, distancia, taxa fixa
-        var parametros = new FreteParametros(5m, 10m, 2m);
+        var parametros = new FreteParametros(5m, 10m, 5m);
         
         // Act
         var valor = strategy.CalcularFrete(parametros);
