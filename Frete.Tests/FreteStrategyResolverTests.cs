@@ -1,3 +1,4 @@
+using Frete.Application.Services;
 using Frete.Application.Strategies;
 using Frete.Domain.Enums;
 using Microsoft.Extensions.DependencyInjection;
