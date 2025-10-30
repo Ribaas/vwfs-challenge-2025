@@ -1,3 +1,9 @@
+using Frete.Application.Interfaces;
+using Frete.Application.Services;
+using Frete.Application.Strategies;
+using Frete.Domain.Interfaces;
+using Frete.Infra.Repositories;
+
 namespace Frete.Api;
 
 public class Program
@@ -6,42 +12,25 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
-        builder.Services.AddAuthorization();
-
-        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
+        
+        // DI
+        builder.Services.AddSingleton<IPedidoRepository, InMemoryPedidoRepository>();
+        builder.Services.AddScoped<NormalFreteStrategy>();
+        builder.Services.AddScoped<ExpressaFreteStrategy>();
+        builder.Services.AddScoped<AgendadaFreteStrategy>();
+        builder.Services.AddScoped<IFreteStrategyResolver, FreteStrategyResolver>();
+        builder.Services.AddScoped<IPedidoService, PedidoService>();
+        
+        
+        // Controllers
+        builder.Services.AddControllers();
 
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
-        {
-            app.MapOpenApi();
-        }
-
+        app.MapOpenApi();
         app.UseHttpsRedirection();
-
-        app.UseAuthorization();
-
-        var summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
-        app.MapGet("/weatherforecast", (HttpContext httpContext) =>
-            {
-                var forecast = Enumerable.Range(1, 5).Select(index =>
-                        new WeatherForecast
-                        {
-                            Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                            TemperatureC = Random.Shared.Next(-20, 55),
-                            Summary = summaries[Random.Shared.Next(summaries.Length)]
-                        })
-                    .ToArray();
-                return forecast;
-            })
-            .WithName("GetWeatherForecast");
+        app.MapControllers();
 
         app.Run();
     }
