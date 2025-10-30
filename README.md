@@ -261,9 +261,9 @@ public class PedidoService
 │  └──────────┬─────────────────────────┘ │
 │             │ depende de ↓              │
 │             │ IPedidoService            │
-└─────────────┼─────────────────────────┬─┘
-              │                         │
-┌─────────────▼─────────────────────────▼─┐
+└─────────────┼───────────────────────────┘
+              │
+┌─────────────▼───────────────────────────┐
 │      Frete.Application (Use Cases)      │
 │  ┌────────────────────────────────────┐ │
 │  │      PedidoService                 │ │
@@ -838,5 +838,3 @@ public sealed record FreteParametros
 public class PedidoNotFoundException : DomainException
 public class InvalidFreteParametrosException : DomainException
 ```
-
----
