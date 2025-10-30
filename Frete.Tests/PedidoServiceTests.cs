@@ -5,6 +5,7 @@ using Frete.Domain.Enums;
 using Frete.Domain.Exceptions;
 using Frete.Domain.Interfaces;
 using Frete.Domain.ValueObjects;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -15,6 +16,7 @@ public class PedidoServiceTests
     private readonly Mock<IPedidoRepository> _mockRepository;
     private readonly Mock<IFreteStrategyResolver> _mockResolver;
     private readonly Mock<IFreteStrategy> _mockStrategy;
+    private readonly Mock<ILogger<PedidoService>> _mockLogger;
     private readonly PedidoService _pedidoService;
 
     public PedidoServiceTests()
@@ -22,7 +24,8 @@ public class PedidoServiceTests
         _mockRepository = new Mock<IPedidoRepository>();
         _mockResolver = new Mock<IFreteStrategyResolver>();
         _mockStrategy = new Mock<IFreteStrategy>();
-        _pedidoService = new PedidoService(_mockRepository.Object, _mockResolver.Object);
+        _mockLogger = new Mock<ILogger<PedidoService>>();
+        _pedidoService = new PedidoService(_mockRepository.Object, _mockResolver.Object, _mockLogger.Object);
     }
 
     [Fact]

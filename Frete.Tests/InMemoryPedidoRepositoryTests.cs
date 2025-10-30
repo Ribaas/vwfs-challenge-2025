@@ -3,6 +3,8 @@ using Frete.Domain.Entities;
 using Frete.Domain.Enums;
 using Frete.Domain.Exceptions;
 using Frete.Infra.Repositories;
+using Microsoft.Extensions.Logging;
+using Moq;
 
 namespace Frete.Tests;
 
@@ -12,7 +14,8 @@ public class InMemoryPedidoRepositoryTests
 
     public InMemoryPedidoRepositoryTests()
     {
-        _repository = new InMemoryPedidoRepository();
+        var mockLogger = new Mock<ILogger<InMemoryPedidoRepository>>();
+        _repository = new InMemoryPedidoRepository(mockLogger.Object);
     }
 
     private static Pedido CreatePedido()

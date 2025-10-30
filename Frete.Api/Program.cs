@@ -13,6 +13,13 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        // Log
+        builder.Logging.ClearProviders();
+        builder.Logging.AddConsole();
+        builder.Logging.AddDebug();
+        builder.Logging.AddFilter("Microsoft.AspNetCore", LogLevel.Warning);
+        builder.Logging.AddFilter("Frete", LogLevel.Information);
+
         builder.Services.AddOpenApi();
 
         // Swagger
@@ -41,6 +48,10 @@ public class Program
 
         var app = builder.Build();
 
+        // Log application startup
+        var logger = app.Services.GetRequiredService<ILogger<Program>>();
+        logger.LogInformation("Iniciando aplicação Frete API");
+
         // Global Exception Handler
         app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
@@ -55,6 +66,7 @@ public class Program
         app.UseHttpsRedirection();
         app.MapControllers();
 
+        logger.LogInformation("Aplicação Frete API configurada e pronta para executar");
         app.Run();
     }
 }

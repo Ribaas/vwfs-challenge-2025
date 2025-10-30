@@ -2,6 +2,8 @@ using Frete.Application.Services;
 using Frete.Application.Strategies;
 using Frete.Domain.Enums;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Moq;
 
 namespace Frete.Tests;
 
@@ -19,7 +21,8 @@ public class FreteStrategyResolverTests
         services.AddScoped<AgendadaFreteStrategy>();
 
         _serviceProvider = services.BuildServiceProvider();
-        _freteStrategyResolver = new FreteStrategyResolver(_serviceProvider);
+        var mockLogger = new Mock<ILogger<FreteStrategyResolver>>();
+        _freteStrategyResolver = new FreteStrategyResolver(_serviceProvider, mockLogger.Object);
     }
 
     [Fact]
