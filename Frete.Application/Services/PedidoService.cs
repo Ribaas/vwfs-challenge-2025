@@ -20,9 +20,9 @@ public sealed class PedidoService (
         return Map(pedido);
     }
 
-    public async Task<PedidoResponse> UpdateAsync(PedidoUpdateRequest req, CancellationToken ct = default)
+    public async Task<PedidoResponse> UpdateAsync(Guid id, PedidoUpdateRequest req, CancellationToken ct = default)
     {
-        var existente = await repository.GetByIdAsync(req.Id, ct) ?? throw new KeyNotFoundException("Pedido não encontrado.");
+        var existente = await repository.GetByIdAsync(id, ct) ?? throw new KeyNotFoundException("Pedido não encontrado.");
         var valor = CalcularFrete(req.Modalidade, new(req.PesoKg, req.DistanciaKm, req.TaxaFixa));
         var atualizado = existente.ComValorFrete(valor).ComModalidade(req.Modalidade);
         await repository.UpdateAsync(atualizado, ct);

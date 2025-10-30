@@ -53,15 +53,15 @@ public class PedidoServiceTests
         var pedidoId = Guid.NewGuid();
         var clientId = Guid.NewGuid();
         var existingPedido = new Pedido(pedidoId, clientId, 100m, ModalidadeFrete.Normal);
-        var request = new PedidoUpdateRequest(pedidoId, ModalidadeFrete.Normal, 5m, 10m, 2m);
+        var request = new PedidoUpdateRequest(ModalidadeFrete.Normal, 5m, 10m, 2m);
         var expectedFrete = 5.5m;
 
-        _mockRepository.Setup(r => r.GetByIdAsync(pedidoId, default)).ReturnsAsync(existingPedido);
+        _mockRepository.Setup(r => r.GetByIdAsync(pedidoId, CancellationToken.None)).ReturnsAsync(existingPedido);
         _mockResolver.Setup(r => r.Resolve(ModalidadeFrete.Normal)).Returns(_mockStrategy.Object);
         _mockStrategy.Setup(s => s.CalcularFrete(It.IsAny<FreteParametros>())).Returns(expectedFrete);
 
         // Act
-        var result = await _pedidoService.UpdateAsync(request);
+        var result = await _pedidoService.UpdateAsync(pedidoId, request);
 
         // Assert
         Assert.Equal(pedidoId, result.Id);
@@ -76,13 +76,13 @@ public class PedidoServiceTests
     {
         // Arrange
         var pedidoId = Guid.NewGuid();
-        var request = new PedidoUpdateRequest(pedidoId, ModalidadeFrete.Normal, 150m, 300m, 75m);
+        var request = new PedidoUpdateRequest(ModalidadeFrete.Normal, 150m, 300m, 75m);
 
         _mockRepository.Setup(r => r.GetByIdAsync(pedidoId, CancellationToken.None)).ReturnsAsync((Pedido?)null);
 
         // Act & Assert
-        await Assert.ThrowsAsync<KeyNotFoundException>(() => _pedidoService.UpdateAsync(request));
-        _mockRepository.Verify(r => r.UpdateAsync(It.IsAny<Pedido>(), default), Times.Never);
+        await Assert.ThrowsAsync<KeyNotFoundException>(() => _pedidoService.UpdateAsync(pedidoId, request));
+        _mockRepository.Verify(r => r.UpdateAsync(It.IsAny<Pedido>(), CancellationToken.None), Times.Never);
     }
 
     [Fact]
