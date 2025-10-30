@@ -7,8 +7,9 @@ using Frete.Infra.Repositories;
 
 namespace Frete.Api;
 
-public partial class Program
+public class Program
 {
+    private Program() { }
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);

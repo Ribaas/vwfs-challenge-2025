@@ -23,7 +23,7 @@ public sealed class PedidoService (
         if (req.ClientId == Guid.Empty)
         {
             logger.LogWarning("Tentativa de criar pedido com ID de cliente vazio");
-            throw new ArgumentException("O ID do cliente não pode ser vazio.", nameof(req.ClientId));
+            throw new ArgumentException("O ID do cliente não pode ser vazio.", "ClientId");
         }
 
         var valor = CalcularFrete(req.Modalidade, new(req.PesoKg, req.DistanciaKm, req.TaxaFixa));
