@@ -14,6 +14,18 @@ public class Program
 
         builder.Services.AddOpenApi();
         
+        // Swagger
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new()
+            {
+                Title = "Frete API",
+                Version = "v1",
+                Description = "API para cálculo de frete de pedidos"
+            });
+        });
+        
         // DI
         builder.Services.AddSingleton<IPedidoRepository, InMemoryPedidoRepository>();
         builder.Services.AddScoped<NormalFreteStrategy>();
@@ -27,6 +39,13 @@ public class Program
         builder.Services.AddControllers();
 
         var app = builder.Build();
+
+        // Swagger
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
 
         app.MapOpenApi();
         app.UseHttpsRedirection();
