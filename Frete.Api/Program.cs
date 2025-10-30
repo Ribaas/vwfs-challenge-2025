@@ -7,7 +7,7 @@ using Frete.Infra.Repositories;
 
 namespace Frete.Api;
 
-public class Program
+public partial class Program
 {
     public static void Main(string[] args)
     {
