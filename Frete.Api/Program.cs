@@ -28,10 +28,14 @@ public partial class Program
         {
             c.SwaggerDoc("v1", new()
             {
-                Title = "Frete API",
+                Title = "API de Cálculo de Frete",
                 Version = "v1",
-                Description = "API para cálculo de frete de pedidos"
+                Description = "API RESTful para gerenciamento e cálculo de frete de pedidos com diferentes modalidades de entrega"
             });
+
+            c.EnableAnnotations();
+            c.OrderActionsBy(apiDesc => apiDesc.RelativePath);
+            c.DescribeAllParametersInCamelCase();
         });
 
         // DI
