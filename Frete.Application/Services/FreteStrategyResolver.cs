@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Frete.Application.Services;
 
-public class FreteStrategyResolver
+public class FreteStrategyResolver : IFreteStrategyResolver
 {
     private readonly IServiceProvider _serviceProvider;
 
