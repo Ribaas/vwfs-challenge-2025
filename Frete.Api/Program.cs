@@ -1,3 +1,4 @@
+using Frete.Api.Middleware;
 using Frete.Application.Interfaces;
 using Frete.Application.Services;
 using Frete.Application.Strategies;
@@ -13,7 +14,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddOpenApi();
-        
+
         // Swagger
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(c =>
@@ -25,7 +26,7 @@ public class Program
                 Description = "API para cálculo de frete de pedidos"
             });
         });
-        
+
         // DI
         builder.Services.AddSingleton<IPedidoRepository, InMemoryPedidoRepository>();
         builder.Services.AddScoped<NormalFreteStrategy>();
@@ -33,12 +34,15 @@ public class Program
         builder.Services.AddScoped<AgendadaFreteStrategy>();
         builder.Services.AddScoped<IFreteStrategyResolver, FreteStrategyResolver>();
         builder.Services.AddScoped<IPedidoService, PedidoService>();
-        
-        
+
+
         // Controllers
         builder.Services.AddControllers();
 
         var app = builder.Build();
+
+        // Global Exception Handler
+        app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
         // Swagger
         if (app.Environment.IsDevelopment())

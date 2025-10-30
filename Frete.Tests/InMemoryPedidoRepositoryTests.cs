@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Frete.Domain.Entities;
 using Frete.Domain.Enums;
+using Frete.Domain.Exceptions;
 using Frete.Infra.Repositories;
 
 namespace Frete.Tests;
@@ -45,7 +46,7 @@ public class InMemoryPedidoRepositoryTests
     }
 
     [Fact]
-    public async Task AddAsync_WithDuplicateId_ShouldThrowInvalidOperationException()
+    public async Task AddAsync_WithDuplicateId_ShouldThrowPedidoAlreadyExistsException()
     {
         // Arrange
         var pedido = CreatePedido();
@@ -55,8 +56,8 @@ public class InMemoryPedidoRepositoryTests
         Func<Task> act = async () => await _repository.AddAsync(pedido);
 
         // Assert
-        await act.Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage($"Pedido com ID {pedido.Id} ja existe.");
+        await act.Should().ThrowAsync<PedidoAlreadyExistsException>()
+            .WithMessage($"Pedido com ID '{pedido.Id}' já existe.");
     }
 
     [Fact]
@@ -119,7 +120,7 @@ public class InMemoryPedidoRepositoryTests
         // Arrange
         var pedidoOriginal = CreatePedido();
         await _repository.AddAsync(pedidoOriginal);
-        
+
         var pedidoAtualizado = pedidoOriginal.ComValorFrete(20m);
 
         // Act
@@ -142,7 +143,7 @@ public class InMemoryPedidoRepositoryTests
     }
 
     [Fact]
-    public async Task UpdateAsync_WithNonExistingPedido_ShouldThrowInvalidOperationException()
+    public async Task UpdateAsync_WithNonExistingPedido_ShouldThrowPedidoNotFoundException()
     {
         // Arrange
         var pedido = CreatePedido();
@@ -151,8 +152,8 @@ public class InMemoryPedidoRepositoryTests
         Func<Task> act = async () => await _repository.UpdateAsync(pedido);
 
         // Assert
-        await act.Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage($"Pedido com ID {pedido.Id} nao encontrado.");
+        await act.Should().ThrowAsync<PedidoNotFoundException>()
+            .WithMessage($"Pedido com ID '{pedido.Id}' não foi encontrado.");
     }
 
     [Fact]
@@ -171,12 +172,12 @@ public class InMemoryPedidoRepositoryTests
     }
 
     [Fact]
-    public async Task DeleteAsync_WithNonExistingId_ShouldNotThrow()
+    public async Task DeleteAsync_WithNonExistingId_ShouldThrowPedidoNotFoundException()
     {
         // Act
         Func<Task> act = async () => await _repository.DeleteAsync(Guid.NewGuid());
 
         // Assert
-        await act.Should().NotThrowAsync();
+        await act.Should().ThrowAsync<PedidoNotFoundException>();
     }
 }

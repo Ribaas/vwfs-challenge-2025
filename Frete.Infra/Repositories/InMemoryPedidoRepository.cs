@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using Frete.Domain.Entities;
+using Frete.Domain.Exceptions;
 using Frete.Domain.Interfaces;
 
 namespace Frete.Infra.Repositories;
@@ -11,18 +12,22 @@ public class InMemoryPedidoRepository : IPedidoRepository
     public Task AddAsync(Pedido pedido, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(pedido);
-        
+
         if (!_db.TryAdd(pedido.Id, pedido))
         {
-            throw new InvalidOperationException($"Pedido com ID {pedido.Id} ja existe.");
+            throw new PedidoAlreadyExistsException(pedido.Id);
         }
-        
+
         return Task.CompletedTask;
     }
 
     public Task DeleteAsync(Guid id, CancellationToken ct = default)
     {
-        _db.TryRemove(id, out _);
+        if (!_db.TryRemove(id, out _))
+        {
+            throw new PedidoNotFoundException(id);
+        }
+
         return Task.CompletedTask;
     }
 
@@ -38,12 +43,12 @@ public class InMemoryPedidoRepository : IPedidoRepository
     public Task UpdateAsync(Pedido pedido, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(pedido);
-        
+
         if (!_db.ContainsKey(pedido.Id))
         {
-            throw new InvalidOperationException($"Pedido com ID {pedido.Id} nao encontrado.");
+            throw new PedidoNotFoundException(pedido.Id);
         }
-        
+
         _db[pedido.Id] = pedido;
         return Task.CompletedTask;
     }

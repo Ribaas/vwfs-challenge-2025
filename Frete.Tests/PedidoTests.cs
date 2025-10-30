@@ -25,13 +25,30 @@ public class PedidoTests
     }
 
     [Fact]
-    public void Constructor_ShouldGenerateNewGuid_WhenIdIsGuidEmpty()
+    public void Constructor_ShouldThrowArgumentException_WhenIdIsGuidEmpty()
     {
-        // Arrange & Act
-        var pedido = new Pedido(Guid.Empty, Guid.NewGuid(), 100m, ModalidadeFrete.Normal);
+        // Act & Assert
+        var exception = Assert.Throws<ArgumentException>(() =>
+            new Pedido(Guid.Empty, Guid.NewGuid(), 100m, ModalidadeFrete.Normal));
+        Assert.Equal("O ID do pedido não pode ser vazio. (Parameter 'id')", exception.Message);
+    }
 
-        // Assert
-        Assert.NotEqual(Guid.Empty, pedido.Id);
+    [Fact]
+    public void Constructor_ShouldThrowArgumentException_WhenClientIdIsGuidEmpty()
+    {
+        // Act & Assert
+        var exception = Assert.Throws<ArgumentException>(() =>
+            new Pedido(Guid.NewGuid(), Guid.Empty, 100m, ModalidadeFrete.Normal));
+        Assert.Equal("O ID do cliente não pode ser vazio. (Parameter 'clientId')", exception.Message);
+    }
+
+    [Fact]
+    public void Constructor_ShouldThrowArgumentException_WhenValorFreteIsNegative()
+    {
+        // Act & Assert
+        var exception = Assert.Throws<ArgumentException>(() =>
+            new Pedido(Guid.NewGuid(), Guid.NewGuid(), -10m, ModalidadeFrete.Normal));
+        Assert.Equal("O valor do frete não pode ser negativo. (Parameter 'valorFrete')", exception.Message);
     }
 
     [Fact]
@@ -51,7 +68,8 @@ public class PedidoTests
     [InlineData(50.0)]
     [InlineData(100.5)]
     [InlineData(0.01)]
-    public void ComValorFrete_ShouldCreateNewPedidoWithNewValue_WhenValueIsPositive(decimal novoValor)
+    [InlineData(0)]
+    public void ComValorFrete_ShouldCreateNewPedidoWithNewValue_WhenValueIsValid(decimal novoValor)
     {
         // Arrange
         var pedidoOriginal = new Pedido(Guid.NewGuid(), Guid.NewGuid(), 100m, ModalidadeFrete.Normal);
@@ -68,17 +86,16 @@ public class PedidoTests
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(-1)]
     [InlineData(-100.5)]
-    public void ComValorFrete_ShouldThrowArgumentException_WhenValueIsZeroOrNegative(decimal valorInvalido)
+    public void ComValorFrete_ShouldThrowArgumentException_WhenValueIsNegative(decimal valorInvalido)
     {
         // Arrange
         var pedido = new Pedido(Guid.NewGuid(), Guid.NewGuid(), 100m, ModalidadeFrete.Normal);
 
         // Act & Assert
         var exception = Assert.Throws<ArgumentException>(() => pedido.ComValorFrete(valorInvalido));
-        Assert.Equal("Valor de frete deve ser positivo", exception.Message);
+        Assert.Equal("Valor de frete não pode ser negativo. (Parameter 'novoValor')", exception.Message);
     }
 
     [Fact]
