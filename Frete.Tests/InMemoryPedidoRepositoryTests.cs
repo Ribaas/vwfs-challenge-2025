@@ -1,5 +1,7 @@
 using FluentAssertions;
+using Frete.Domain.Entities;
 using Frete.Domain.Enums;
+using Frete.Infra.Repositories;
 
 namespace Frete.Tests;
 
@@ -115,17 +117,18 @@ public class InMemoryPedidoRepositoryTests
     public async Task UpdateAsync_WithExistingPedido_ShouldUpdateSuccessfully()
     {
         // Arrange
-        var pedido = CreatePedido();
-        await _repository.AddAsync(pedido);
+        var pedidoOriginal = CreatePedido();
+        await _repository.AddAsync(pedidoOriginal);
         
-        var updatedPedido = pedido;
+        var pedidoAtualizado = pedidoOriginal.ComValorFrete(20m);
 
         // Act
-        await _repository.UpdateAsync(updatedPedido);
+        await _repository.UpdateAsync(pedidoAtualizado);
 
         // Assert
-        var result = await _repository.GetByIdAsync(pedido.Id);
-        result.Should().Be(updatedPedido);
+        var result = await _repository.GetByIdAsync(pedidoOriginal.Id);
+        result.ValorFrete.Should().Be(20m);
+        result.Id.Should().Be(pedidoOriginal.Id);
     }
 
     [Fact]
