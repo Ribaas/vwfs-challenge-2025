@@ -70,6 +70,20 @@ public class PedidoServiceTests
         Assert.Equal(expectedFrete, result.ValorFrete);
         _mockRepository.Verify(r => r.UpdateAsync(It.IsAny<Pedido>(), CancellationToken.None), Times.Once);
     }
+    
+    [Fact]
+    public async Task UpdateAsync_ShouldThrowKeyNotFoundException_WhenPedidoNotFound()
+    {
+        // Arrange
+        var pedidoId = Guid.NewGuid();
+        var request = new PedidoUpdateRequest(pedidoId, ModalidadeFrete.Normal, 150m, 300m, 75m);
+
+        _mockRepository.Setup(r => r.GetByIdAsync(pedidoId, CancellationToken.None)).ReturnsAsync((Pedido?)null);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<KeyNotFoundException>(() => _pedidoService.UpdateAsync(request));
+        _mockRepository.Verify(r => r.UpdateAsync(It.IsAny<Pedido>(), default), Times.Never);
+    }
 
     [Fact]
     public async Task GetByIdAsync_ShouldReturnPedido_WhenExists()
@@ -152,5 +166,31 @@ public class PedidoServiceTests
 
         // Assert
         _mockRepository.Verify(r => r.DeleteAsync(pedidoId, CancellationToken.None), Times.Once);
+    }
+    
+    [Theory]
+    [InlineData(ModalidadeFrete.Normal, 10, 20, 5)]
+    [InlineData(ModalidadeFrete.Expressa, 5, 5, 5)]
+    [InlineData(ModalidadeFrete.Agendada, 7, 10, 20)]
+    public async Task CreateAsync_ShouldCalculateFreteForDifferentModalidades(
+        ModalidadeFrete modalidade, decimal pesoKg, decimal distanciaKm, decimal taxaFixa)
+    {
+        // Arrange
+        var request = new PedidoCreateRequest(Guid.NewGuid(), modalidade, pesoKg, distanciaKm, taxaFixa);
+        var expectedFrete = pesoKg + distanciaKm + taxaFixa;
+    
+        _mockResolver.Setup(r => r.Resolve(modalidade)).Returns(_mockStrategy.Object);
+        _mockStrategy.Setup(s => s.CalcularFrete(It.Is<FreteParametros>(
+                p => p.PesoKg == pesoKg && p.DistanciaKm == distanciaKm && p.TaxaFixa == taxaFixa)))
+            .Returns(expectedFrete);
+    
+        // Act
+        var result = await _pedidoService.CreateAsync(request);
+    
+        // Assert
+        Assert.Equal(expectedFrete, result.ValorFrete);
+        Assert.Equal(modalidade, result.Modalidade);
+        _mockResolver.Verify(r => r.Resolve(modalidade), Times.Once);
+        _mockStrategy.Verify(s => s.CalcularFrete(It.IsAny<FreteParametros>()), Times.Once);
     }
 }
