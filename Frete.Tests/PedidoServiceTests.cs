@@ -1,3 +1,5 @@
+using Frete.Application.DTOs;
+using Frete.Application.Services;
 using Frete.Domain.Entities;
 using Frete.Domain.Enums;
 using Frete.Domain.Interfaces;
